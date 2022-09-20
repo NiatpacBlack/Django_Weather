@@ -1,6 +1,5 @@
 import requests
 from loguru import logger
-from json import loads
 
 from .config import ApiConfig
 from .models import PopularCity
@@ -47,9 +46,15 @@ def get_all_weather_info_for_city_now(city_name: str, api_key=ApiConfig.API_KEY)
     Словарь получается десериализацией из json формата, которы мы получаем из api.
     В api передается город city_name и api ключ api_key
     """
-    api_url = f'https://api.openweathermap.org/data/2.5/weather?q={city_name}&units=metric&appid={api_key}&lang=ru'
-    all_weather_for_city = requests.get(api_url).text
-    return loads(all_weather_for_city)
+    api_url = f'https://api.openweathermap.org/data/2.5/weather'
+    url_parameters = {
+        'q': city_name,
+        'units': 'metric',
+        'lang': 'ru',
+        'appid': api_key
+    }
+    all_weather_for_city = requests.get(api_url, params=url_parameters)
+    return all_weather_for_city.json()
 
 
 @logger.catch
@@ -89,9 +94,15 @@ def get_coords_for_city(city_name: str, api_key=ApiConfig.API_KEY) -> dict | Non
     Для получения данных использует api в который передает название города city_name и api ключ api_key
     """
 
-    api_url = f'http://api.openweathermap.org/geo/1.0/direct?q={city_name}&limit=1&appid={api_key}&lang=ru'
-    coords_for_city = requests.get(api_url).text
-    coords_for_city, = loads(coords_for_city)
+    api_url = f'http://api.openweathermap.org/geo/1.0/direct'
+    url_parameters = {
+        'q': city_name,
+        'limit': '1',
+        'lang': 'ru',
+        'appid': api_key
+    }
+    coords_for_city = requests.get(api_url, params=url_parameters)
+    coords_for_city, = coords_for_city.json()
     return {
         'lat': coords_for_city['lat'],
         'lon': coords_for_city['lon']
