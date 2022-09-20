@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}
+    Home
+{% endblock %}
+
+{% block content_app %}
+    <div class="container">
+        <div class="row">
+            <div class="col-4 mt-5">
+                <form action="" method="post">
+                    {% csrf_token %}
+                    <label for="city">
+                        {{ form.as_p }}
+                    </label>
+                    <label for="send">
+                        <input type="submit" name="send" value="Узнать" class="btn btn-danger">
+                    </label>
+                </form>
+            </div>
+            <div class="col-8 mt-5">
+                <div class="alert alert-success">
+                    <img src="http://openweathermap.org/img/w/{{ weather_info_for_city_from_form.weather_icon_now }}.png"
+                         alt=""
+                         class="img-thunbnail pe-4">
+                    <b>Температура в городе {{ weather_info_for_city_from_form.city_name }}</b>:
+                    {{ weather_info_for_city_from_form.temperature_now }}
+                    <sup>o</sup>.
+                    <b>Ощущается как</b> {{ weather_info_for_city_from_form.feels_like_now }} <sup>o</sup>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="popular_cities text-muted border-top">
+        <div class="container">
+            <div class="d-flex flex-wrap align-items-center justify-content-between text-muted border-top">
+                <div class="row">
+                    {% for weather_for_popular_city in weather_for_all_popular_cities %}
+                        <div class="col-3 alert alert-primary mt-3 mx-5 px-3 py-3 text-center">
+                            <h2>{{ weather_for_popular_city.city_name }}</h2><br>
+                            <h1 class="text-dark">{{ weather_for_popular_city.temperature_now }}<sup>o</sup></h1><br>
+                            <img src="http://openweathermap.org/img/w/{{ weather_for_popular_city.weather_icon_now }}.png"
+                                 alt=""
+                                 class="img-thunbnail"><br>
+                            <i>{{ weather_for_popular_city.weather_description_now }}</i><br>
+                            <b>Влажность: {{ weather_for_popular_city.humidity_now }} %</b><br>
+                            <b>Скорость ветра: {{ weather_for_popular_city.wind_speed_now }} м/c</b><br>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
