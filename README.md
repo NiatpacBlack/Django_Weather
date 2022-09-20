@@ -9,7 +9,8 @@
 ## Запуск проекта
    - Устанавливаем зависимости из requirements.txt: `pip install -r requirements.txt` Для Unix-систем вместо `pip` потребуется `pip3`.
    - Вводим команду: `python manage.py runserver`
-
+   - Зарагестрироваться на сайте [openweathermap](https://openweathermap.org/) и получить api key из личного кабинета. 
+   - Указать `API_KEY` в переменной окружения или непосредственно в файле settings.py
 ## Скриншоты
 ![image](https://user-images.githubusercontent.com/84034483/191239324-97542eab-4a96-4382-90ea-5f1f589d4b8b.png)
 
