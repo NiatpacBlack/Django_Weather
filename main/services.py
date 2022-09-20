@@ -1,8 +1,8 @@
 import requests
-from json import loads
 from loguru import logger
+from json import loads
 
-from .config import MainConfig
+from .config import ApiConfig
 from .models import PopularCity
 
 
@@ -41,7 +41,7 @@ def get_weather_info_for_city_from_my_form(city_name: str) -> dict:
 
 
 @logger.catch
-def get_all_weather_info_for_city_now(city_name: str, api_key=MainConfig.API_KEY) -> dict:
+def get_all_weather_info_for_city_now(city_name: str, api_key=ApiConfig.API_KEY) -> dict:
     """
     Отдает словарь со всеми данными о погоде в городе city_name на текущее время.
     Словарь получается десериализацией из json формата, которы мы получаем из api.
@@ -83,7 +83,7 @@ def get_wind_speed_for_city_now(city_name: str) -> str:
 
 
 @logger.catch
-def get_coords_for_city(city_name: str, api_key=MainConfig.API_KEY) -> dict | None:
+def get_coords_for_city(city_name: str, api_key=ApiConfig.API_KEY) -> dict | None:
     """
     Принимает название города и возвращает словарь с координатами широты и долготы
     Для получения данных использует api в который передает название города city_name и api ключ api_key

@@ -3,3 +3,4 @@ from .models import PopularCity
 
 
 admin.site.register(PopularCity)
+

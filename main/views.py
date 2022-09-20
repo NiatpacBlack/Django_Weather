@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
-from .services import *
 from .forms import CityForm
+from .services import *
 
 
 @logger.catch
