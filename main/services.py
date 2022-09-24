@@ -7,7 +7,7 @@ from .models import PopularCity
 
 @logger.catch
 def get_all_cities_for_popular_city_model() -> list:
-    """Возвращает список названий городов из таблицы популярных городов PopularCity"""
+    """Возвращает список названий городов из таблицы популярных городов PopularCity."""
 
     all_cities = PopularCity.objects.all()
     return [city.city_name for city in all_cities]
@@ -17,7 +17,7 @@ def get_all_cities_for_popular_city_model() -> list:
 def get_weather_for_all_popular_cities() -> list:
     """
     Возвращает список словарей, каждый словарь имеет параметры, отображающие данные о погоде в каждом городе из
-    таблицы PopularCity
+    таблицы PopularCity.
     """
     all_cities = get_all_cities_for_popular_city_model()
     return [get_weather_info_for_city_from_my_form(city) for city in all_cities]
@@ -25,14 +25,18 @@ def get_weather_for_all_popular_cities() -> list:
 
 @logger.catch
 def get_weather_info_for_city_from_my_form(city_name: str) -> dict:
-    """Возвращает словарь с параметрами, которые буду выводиться в ответе на запрос погоды по конкретному городу"""
+    """Возвращает словарь с параметрами, которые буду выводиться в ответе на запрос погоды по конкретному городу."""
     if get_all_weather_info_for_city_now(city_name) is None:
-        weather_info_for_city = {"error_text": "Сожалеем, в нашей базе нет такого города, повторите попытку"}
+        weather_info_for_city = {
+            "error_text": "Сожалеем, в нашей базе нет такого города, повторите попытку"
+        }
     else:
         weather_info_for_city = {
             "city_name": city_name,
             "temperature_now": get_temperature_info_for_city_now(city_name, "temp"),
-            "feels_like_now": get_temperature_info_for_city_now(city_name, "feels_like"),
+            "feels_like_now": get_temperature_info_for_city_now(
+                city_name, "feels_like"
+            ),
             "humidity_now": get_temperature_info_for_city_now(city_name, "humidity"),
             "weather_icon_now": get_weather_info_for_city_now(city_name, "icon"),
             "weather_description_now": get_weather_info_for_city_now(
@@ -44,23 +48,29 @@ def get_weather_info_for_city_from_my_form(city_name: str) -> dict:
 
 
 @logger.catch
-def get_all_weather_info_for_city_now(city_name: str, api_key=ApiConfig.API_KEY) -> dict | None:
+def get_all_weather_info_for_city_now(
+    city_name: str, api_key=ApiConfig.API_KEY
+) -> dict | None:
     """
     Отдает словарь со всеми данными о погоде в городе city_name на текущее время.
     Словарь получается десериализацией из json формата, которы мы получаем из api.
-    В api передается город city_name и api ключ api_key
+    В api передается город city_name и api ключ api_key.
     """
     api_url = f"https://api.openweathermap.org/data/2.5/weather"
     url_parameters = {"q": city_name, "units": "metric", "lang": "ru", "appid": api_key}
     all_weather_for_city = requests.get(api_url, params=url_parameters)
-    return all_weather_for_city.json() if all_weather_for_city.json()['cod'] != '404' else None
+    return (
+        all_weather_for_city.json()
+        if all_weather_for_city.json()["cod"] != "404"
+        else None
+    )
 
 
 @logger.catch
 def get_temperature_info_for_city_now(city_name: str, temperature_type: str) -> str:
     """
     Отдает данные о температуре на текущий момент, относящиеся к одному из типов temperature_type:
-    'temp', 'feels_like', 'temp_min', 'temp_max', 'pressure', 'humidity', 'sea_level', 'grnd_level'
+    'temp', 'feels_like', 'temp_min', 'temp_max', 'pressure', 'humidity', 'sea_level', 'grnd_level'.
     """
     weather_for_city_now = get_all_weather_info_for_city_now(city_name)
     return weather_for_city_now["main"][temperature_type]
@@ -71,7 +81,7 @@ def get_weather_info_for_city_now(city_name: str, context: str) -> str:
     """
     Отдает строку, со значением одного из ключей context:
     'icon' - название картинки изображающей текущую погоду,
-    'description' - описание текущий погоды короткой фразой
+    'description' - описание текущий погоды короткой фразой.
     """
     weather_for_city = get_all_weather_info_for_city_now(city_name)
     return weather_for_city["weather"][0][context]
@@ -79,9 +89,7 @@ def get_weather_info_for_city_now(city_name: str, context: str) -> str:
 
 @logger.catch
 def get_wind_speed_for_city_now(city_name: str) -> str:
-    """
-    Отдает строку, со значением скорости ветра в метрах в секунду в городе city_name
-    """
+    """Отдает строку, со значением скорости ветра в метрах в секунду в городе city_name."""
     weather_for_city = get_all_weather_info_for_city_now(city_name)
     return weather_for_city["wind"]["speed"]
 
@@ -89,8 +97,8 @@ def get_wind_speed_for_city_now(city_name: str) -> str:
 @logger.catch
 def get_coords_for_city(city_name: str, api_key=ApiConfig.API_KEY) -> dict | None:
     """
-    Принимает название города и возвращает словарь с координатами широты и долготы
-    Для получения данных использует api в который передает название города city_name и api ключ api_key
+    Принимает название города, и возвращает словарь с координатами широты и долготы
+    Для получения данных использует api в который передает название города city_name и api ключ api_key.
     """
 
     api_url = f"http://api.openweathermap.org/geo/1.0/direct"

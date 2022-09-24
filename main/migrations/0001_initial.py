@@ -7,20 +7,27 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='PopularCity',
+            name="PopularCity",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50)),
             ],
             options={
-                'verbose_name': 'Популярный город',
-                'verbose_name_plural': 'Популярные города',
-                'db_table': 'popular_city',
+                "verbose_name": "Популярный город",
+                "verbose_name_plural": "Популярные города",
+                "db_table": "popular_city",
             },
         ),
     ]
