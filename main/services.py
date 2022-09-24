@@ -28,13 +28,15 @@ def get_weather_info_for_city_from_my_form(city_name: str) -> dict:
     """Возвращает словарь с параметрами, которые буду выводиться в ответе на запрос погоды по конкретному городу"""
 
     weather_info_for_city = {
-        'city_name': city_name,
-        'temperature_now': get_temperature_info_for_city_now(city_name, 'temp'),
-        'feels_like_now': get_temperature_info_for_city_now(city_name, 'feels_like'),
-        'humidity_now': get_temperature_info_for_city_now(city_name, 'humidity'),
-        'weather_icon_now': get_weather_info_for_city_now(city_name, 'icon'),
-        'weather_description_now': get_weather_info_for_city_now(city_name, 'description'),
-        'wind_speed_now': get_wind_speed_for_city_now(city_name),
+        "city_name": city_name,
+        "temperature_now": get_temperature_info_for_city_now(city_name, "temp"),
+        "feels_like_now": get_temperature_info_for_city_now(city_name, "feels_like"),
+        "humidity_now": get_temperature_info_for_city_now(city_name, "humidity"),
+        "weather_icon_now": get_weather_info_for_city_now(city_name, "icon"),
+        "weather_description_now": get_weather_info_for_city_now(
+            city_name, "description"
+        ),
+        "wind_speed_now": get_wind_speed_for_city_now(city_name),
     }
     return weather_info_for_city
 
@@ -46,13 +48,8 @@ def get_all_weather_info_for_city_now(city_name: str, api_key=ApiConfig.API_KEY)
     Словарь получается десериализацией из json формата, которы мы получаем из api.
     В api передается город city_name и api ключ api_key
     """
-    api_url = f'https://api.openweathermap.org/data/2.5/weather'
-    url_parameters = {
-        'q': city_name,
-        'units': 'metric',
-        'lang': 'ru',
-        'appid': api_key
-    }
+    api_url = f"https://api.openweathermap.org/data/2.5/weather"
+    url_parameters = {"q": city_name, "units": "metric", "lang": "ru", "appid": api_key}
     all_weather_for_city = requests.get(api_url, params=url_parameters)
     return all_weather_for_city.json()
 
@@ -64,7 +61,7 @@ def get_temperature_info_for_city_now(city_name: str, temperature_type: str) -> 
     'temp', 'feels_like', 'temp_min', 'temp_max', 'pressure', 'humidity', 'sea_level', 'grnd_level'
     """
     weather_for_city_now = get_all_weather_info_for_city_now(city_name)
-    return weather_for_city_now['main'][temperature_type]
+    return weather_for_city_now["main"][temperature_type]
 
 
 @logger.catch
@@ -75,7 +72,7 @@ def get_weather_info_for_city_now(city_name: str, context: str) -> str:
     'description' - описание текущий погоды короткой фразой
     """
     weather_for_city = get_all_weather_info_for_city_now(city_name)
-    return weather_for_city['weather'][0][context]
+    return weather_for_city["weather"][0][context]
 
 
 @logger.catch
@@ -84,7 +81,7 @@ def get_wind_speed_for_city_now(city_name: str) -> str:
     Отдает строку, со значением скорости ветра в метрах в секунду в городе city_name
     """
     weather_for_city = get_all_weather_info_for_city_now(city_name)
-    return weather_for_city['wind']['speed']
+    return weather_for_city["wind"]["speed"]
 
 
 @logger.catch
@@ -94,16 +91,12 @@ def get_coords_for_city(city_name: str, api_key=ApiConfig.API_KEY) -> dict | Non
     Для получения данных использует api в который передает название города city_name и api ключ api_key
     """
 
-    api_url = f'http://api.openweathermap.org/geo/1.0/direct'
-    url_parameters = {
-        'q': city_name,
-        'limit': '1',
-        'lang': 'ru',
-        'appid': api_key
-    }
+    api_url = f"http://api.openweathermap.org/geo/1.0/direct"
+    url_parameters = {"q": city_name, "limit": "1", "lang": "ru", "appid": api_key}
     coords_for_city = requests.get(api_url, params=url_parameters)
-    coords_for_city, = coords_for_city.json()
-    return {
-        'lat': coords_for_city['lat'],
-        'lon': coords_for_city['lon']
-    } if all([coords_for_city['lat'], coords_for_city['lon']]) else None
+    (coords_for_city,) = coords_for_city.json()
+    return (
+        {"lat": coords_for_city["lat"], "lon": coords_for_city["lon"]}
+        if all([coords_for_city["lat"], coords_for_city["lon"]])
+        else None
+    )

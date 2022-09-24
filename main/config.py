@@ -1,4 +1,5 @@
 import os
+
 from django_weather.settings import API_KEY
 
 
