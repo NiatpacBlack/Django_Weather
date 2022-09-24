@@ -18,15 +18,22 @@
                 </form>
             </div>
             <div class="col-8 mt-5">
-                <div class="alert alert-success">
-                    <img src="http://openweathermap.org/img/w/{{ weather_info_for_city_from_form.weather_icon_now }}.png"
-                         alt=""
-                         class="img-thunbnail pe-4">
-                    <b>Температура в городе {{ weather_info_for_city_from_form.city_name }}</b>:
-                    {{ weather_info_for_city_from_form.temperature_now }}
-                    <sup>o</sup>.
-                    <b>Ощущается как</b> {{ weather_info_for_city_from_form.feels_like_now }} <sup>o</sup>
-                </div>
+                {% if weather_info_for_city_from_form.city_name %}
+                    <div class="alert alert-success">
+                        <img
+                             src="http://openweathermap.org/img/w/{{ weather_info_for_city_from_form.weather_icon_now }}.png"
+                             alt=""
+                             class="img-thunbnail pe-4">
+                        <b>Температура в городе {{ weather_info_for_city_from_form.city_name }}</b>:
+                        {{ weather_info_for_city_from_form.temperature_now }}
+                        <sup>o</sup>.
+                        <b>Ощущается как</b> {{ weather_info_for_city_from_form.feels_like_now }} <sup>o</sup>
+                    </div>
+                {% else %}
+                    <div class="alert alert-danger">
+                        <b>{{ weather_info_for_city_from_form.error_text }}</b>
+                    <div>
+                {% endif %}
             </div>
         </div>
     </div>

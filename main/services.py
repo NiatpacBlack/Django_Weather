@@ -26,23 +26,25 @@ def get_weather_for_all_popular_cities() -> list:
 @logger.catch
 def get_weather_info_for_city_from_my_form(city_name: str) -> dict:
     """Возвращает словарь с параметрами, которые буду выводиться в ответе на запрос погоды по конкретному городу"""
-
-    weather_info_for_city = {
-        "city_name": city_name,
-        "temperature_now": get_temperature_info_for_city_now(city_name, "temp"),
-        "feels_like_now": get_temperature_info_for_city_now(city_name, "feels_like"),
-        "humidity_now": get_temperature_info_for_city_now(city_name, "humidity"),
-        "weather_icon_now": get_weather_info_for_city_now(city_name, "icon"),
-        "weather_description_now": get_weather_info_for_city_now(
-            city_name, "description"
-        ),
-        "wind_speed_now": get_wind_speed_for_city_now(city_name),
-    }
+    if get_all_weather_info_for_city_now(city_name) is None:
+        weather_info_for_city = {"error_text": "Сожалеем, в нашей базе нет такого города, повторите попытку"}
+    else:
+        weather_info_for_city = {
+            "city_name": city_name,
+            "temperature_now": get_temperature_info_for_city_now(city_name, "temp"),
+            "feels_like_now": get_temperature_info_for_city_now(city_name, "feels_like"),
+            "humidity_now": get_temperature_info_for_city_now(city_name, "humidity"),
+            "weather_icon_now": get_weather_info_for_city_now(city_name, "icon"),
+            "weather_description_now": get_weather_info_for_city_now(
+                city_name, "description"
+            ),
+            "wind_speed_now": get_wind_speed_for_city_now(city_name),
+        }
     return weather_info_for_city
 
 
 @logger.catch
-def get_all_weather_info_for_city_now(city_name: str, api_key=ApiConfig.API_KEY) -> dict:
+def get_all_weather_info_for_city_now(city_name: str, api_key=ApiConfig.API_KEY) -> dict | None:
     """
     Отдает словарь со всеми данными о погоде в городе city_name на текущее время.
     Словарь получается десериализацией из json формата, которы мы получаем из api.
@@ -51,7 +53,7 @@ def get_all_weather_info_for_city_now(city_name: str, api_key=ApiConfig.API_KEY)
     api_url = f"https://api.openweathermap.org/data/2.5/weather"
     url_parameters = {"q": city_name, "units": "metric", "lang": "ru", "appid": api_key}
     all_weather_for_city = requests.get(api_url, params=url_parameters)
-    return all_weather_for_city.json()
+    return all_weather_for_city.json() if all_weather_for_city.json()['cod'] != '404' else None
 
 
 @logger.catch
